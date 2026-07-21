@@ -1,0 +1,32 @@
+{
+  "hotkey": "ctrl+shift+m",
+  "sound_enabled": true,
+  "scale": 1.8,
+  "karma_symbol": 10,
+  "max_karma": 10,
+  "wave_params": {
+    "wave_duration": 5.0,
+    "shrink_amount": 0.02,
+    "shrink_dur": 0.06,
+    "recover_dur": 0.01,
+    "max_radius_ratio": 1.5
+  },
+  "intervals": [
+    {
+      "totalPip": 20,
+      "totalTime": 5.0,
+      "karmaSymbol": 1,
+      "karmaReinforced": false,
+      "maxKarma": 5
+    },
+    {
+      "totalPip": 2,
+      "totalTime": 10.0,
+      "karmaSymbol": 10,
+      "karmaReinforced": true,
+      "maxKarma": 10
+    }
+  ],
+  "ticktock": 3.2,
+  "quit_hotkey": "ctrl+shift+q"
+}
