@@ -1,8 +1,8 @@
-# 业力计时器 (Karma Timer)
+# 雨循环计时器 (RainCycleTimer)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**业力计时器** 是一款 Windows 桌面工具，复刻了游戏《雨世界》(Rain World) 中的"业力时钟"。
+**雨循环计时器** 是一款 Windows 桌面工具，复刻了游戏《雨世界》(Rain World) 中的"业力时钟"。
 
 在《雨世界》中，这个 UI 被称为 **Cycle Timer（轮回计时器）** 或 **Rain Timer（雨期计时器）**。它是游戏生存机制的核心：每个轮回开始后，计时器便会开始倒计时，代表暴雨来临前的剩余时间。玩家必须在此之前抵达避难所并成功休眠，才能推进游戏。
 
@@ -45,30 +45,12 @@
 
 ### 方式一：使用打包好的 exe（推荐给普通用户）
 
-1. 从 Releases 页面下载 KarmaTimer_Portable.zip
+1. 从 Releases 页面下载 RainCycleTimer.zip
 2. 解压到任意文件夹
-3. 双击 KarmaTimer.exe 即可运行
-4. 如需调整参数，双击 KarmaTimerEditor.exe（设置工具）
+3. 双击 RainCycleTimer.exe 即可运行
+4. 如需调整参数，双击 RainCycleTimerEditor.exe（设置工具）
 
-### 方式二：从源代码运行（推荐给开发者）
-
-1. 克隆仓库：
-   git clone https://github.com/Jiah-Z/RainCycleClock.git
-   cd RainCycleClock
-
-2. 安装依赖：
-   pip install -r requirements.txt
-
-3. 运行主程序：
-   python src/main.py
-
-4. （可选）运行设置工具：
-   python src/settings_editor.py
-
-> 注意：如果需要使用全局热键，请以管理员身份运行程序。
-
-
-## 使用指南
+## 使用指南（也可查看文件内的教程）
 
 ### 基本操作
 
@@ -130,24 +112,6 @@ config.json 保存所有自定义设置（热键、缩放、业力等级、波�
   - karmaSymbol：业力等级 (0~10)
   - karmaReinforced：是否显示强化花环 (true/false)
   - maxKarma：若等级 >5，需指定最大值 (7~10)
-
-
-## 开发与打包
-
-### 打包为 exe
-
-确保已安装 PyInstaller：
-pip install pyinstaller
-
-打包主程序：
-cd src
-python -m PyInstaller --onedir --name "KarmaTimer" --add-data "../resources;resources" --noconsole main.py
-
-打包设置工具：
-python -m PyInstaller --onedir --name "KarmaTimerEditor" --add-data "../resources;resources" --noconsole settings_editor.py
-
-生成的 exe 位于 dist/ 文件夹。
-
 
 ## 许可证与版权声明
 
