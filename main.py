@@ -169,12 +169,8 @@ class RainWorldClock:
         if os.path.exists(icon_path):
             icon = QIcon(icon_path)
         else:
-        # 如果找不到图标文件，生成一个红色方块作为调试标识
-            from PyQt5.QtGui import QPixmap, QPainter
-            pixmap = QPixmap(64, 64)
-            pixmap.fill(Qt.red)
-            icon = QIcon(pixmap)
-            self.tray.setIcon(icon)
+            icon = QIcon()
+        self.tray.setIcon(icon)
         self.tray.setToolTip("Rain Cycle Timer")
 
         tray_menu = QMenu()
@@ -246,6 +242,9 @@ class RainWorldClock:
                     self.scale = data.get("scale", default["scale"])
                     self.saved_karma_symbol = data.get("karma_symbol", default["karma_symbol"])
                     self.saved_max_karma = data.get("max_karma", default["max_karma"])
+                    # 【修复】读取 ticktock 并应用到 Project.settings
+                    ticktock = data.get("ticktock", 3.2)
+                    Project.settings["ticktock"] = ticktock
                     wave_params = data.get("wave_params", {})
                     Project.WAVE_PARAMS = wave_params
             except:
@@ -256,6 +255,7 @@ class RainWorldClock:
                 self.saved_karma_symbol = default["karma_symbol"]
                 self.saved_max_karma = default["max_karma"]
                 Project.WAVE_PARAMS = {}
+                Project.settings["ticktock"] = 3.2
         else:
             self.hotkey = default["hotkey"]
             self.quit_hotkey = default["quit_hotkey"]
@@ -264,6 +264,7 @@ class RainWorldClock:
             self.saved_karma_symbol = default["karma_symbol"]
             self.saved_max_karma = default["max_karma"]
             Project.WAVE_PARAMS = {}
+            Project.settings["ticktock"] = 3.2
 
     def save_config(self):
         if self.current_interval and self.current_interval.karmaSymbol != 0:
@@ -279,6 +280,7 @@ class RainWorldClock:
             "scale": Project.SCALE,
             "karma_symbol": karma,
             "max_karma": maxk,
+            "ticktock": Project.settings.get("ticktock", 3.2),
             "wave_params": getattr(Project, 'WAVE_PARAMS', {})
         }
         try:
@@ -392,6 +394,9 @@ class RainWorldClock:
         if ok:
             self.current_interval.karmaSymbol = level
             self.current_interval.maxKarma = 10 if level > 5 else 5
+            # 同步更新缓存，确保新建倒计时使用新等级
+            self.saved_karma_symbol = self.current_interval.karmaSymbol
+            self.saved_max_karma = self.current_interval.maxKarma
             self.save_config()
 
     def toggle_always_on_top(self):

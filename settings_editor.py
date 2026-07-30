@@ -254,7 +254,7 @@ class SettingsEditor(QWidget):
         layout.addRow("Sound Enabled:", self.sound_check)
 
         self.ticktock_spin = QDoubleSpinBox()
-        self.ticktock_spin.setRange(0.1, 10.0)
+        self.ticktock_spin.setRange(0.1, 999999999.0)
         self.ticktock_spin.setSingleStep(0.1)
         self.ticktock_spin.setValue(self.ticktock)
         self.ticktock_spin.setToolTip("Interval between tick and tock sounds (seconds)")
