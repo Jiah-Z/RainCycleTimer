@@ -9,6 +9,8 @@ from PyQt5.QtWidgets import (QApplication, QWidget, QVBoxLayout, QHBoxLayout,
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 
+from localization import localization
+
 # ---- 资源路径辅助函数 ----
 def resource_path(relative_path):
     try:
@@ -21,8 +23,10 @@ CONFIG_FILE = "config.json"
 
 class SettingsEditor(QWidget):
     def __init__(self):
+        self.load_config()
+
         super().__init__()
-        self.setWindowTitle("Rain Cycle Timer - Settings Editor")
+        self.setWindowTitle(localization(self.config["Language"], "Rain Cycle Timer - Settings Editor"))
         self.setMinimumSize(600, 500)
 
         # 尝试加载窗口图标（如果 icon.ico 存在则显示）
@@ -30,7 +34,6 @@ class SettingsEditor(QWidget):
         if os.path.exists(icon_path):
             self.setWindowIcon(QIcon(icon_path))
 
-        self.load_config()
         self.init_ui()
 
     def load_config(self):
@@ -52,6 +55,7 @@ class SettingsEditor(QWidget):
         }
         self.wave_params = self.config.get("wave_params", default_wave)
         self.intervals = self.config.get("intervals", [])
+        self.Language = self.config.get("Language", "en-us")
         self.hotkey = self.config.get("hotkey", "ctrl+shift+f")
         self.quit_hotkey = self.config.get("quit_hotkey", "ctrl+shift+q")
         self.sound_enabled = self.config.get("sound_enabled", True)
@@ -60,6 +64,7 @@ class SettingsEditor(QWidget):
 
     def save_config(self):
         self.collect_table_data()
+        self.Language = self.Language_edit.text()
         self.hotkey = self.hotkey_edit.text()
         self.quit_hotkey = self.quit_hotkey_edit.text()
         self.scale = self.scale_spin.value()
@@ -75,6 +80,7 @@ class SettingsEditor(QWidget):
 
         self.config["wave_params"] = self.wave_params
         self.config["intervals"] = self.intervals
+        self.config["Language"] = self.Language
         self.config["hotkey"] = self.hotkey
         self.config["quit_hotkey"] = self.quit_hotkey
         self.config["sound_enabled"] = self.sound_enabled
@@ -85,21 +91,21 @@ class SettingsEditor(QWidget):
                 json.dump(self.config, f, indent=2)
             return True
         except Exception as e:
-            QMessageBox.critical(self, "Error", f"Failed to save: {e}")
+            QMessageBox.critical(self, localization(self.config["Language"], "Error"), f"{localization(self.config['Language'], 'Failed to save:')} {e}")
             return False
 
     def init_ui(self):
         layout = QVBoxLayout()
         tabs = QTabWidget()
-        tabs.addTab(self.create_wave_tab(), "Wave & Vibration")
-        tabs.addTab(self.create_intervals_tab(), "Intervals")
-        tabs.addTab(self.create_general_tab(), "General")
+        tabs.addTab(self.create_wave_tab(), localization(self.config["Language"], "Wave & Vibration"))
+        tabs.addTab(self.create_intervals_tab(), localization(self.config["Language"], "Intervals"))
+        tabs.addTab(self.create_general_tab(), localization(self.config["Language"], "General"))
         layout.addWidget(tabs)
 
         btn_layout = QHBoxLayout()
-        save_btn = QPushButton("Save to config.json")
+        save_btn = QPushButton(localization(self.config["Language"], "Save to config.json"))
         save_btn.clicked.connect(self.save_and_show)
-        export_btn = QPushButton("Export as JSON file...")
+        export_btn = QPushButton(localization(self.config["Language"], "Export as JSON file..."))
         export_btn.clicked.connect(self.export_json)
         btn_layout.addWidget(save_btn)
         btn_layout.addWidget(export_btn)
@@ -109,14 +115,14 @@ class SettingsEditor(QWidget):
 
     def save_and_show(self):
         if self.save_config():
-            QMessageBox.information(self, "Saved", "Configuration saved successfully.")
+            QMessageBox.information(self, localization(self.config["Language"], "Saved"), localization(self.config["Language"], "Configuration saved successfully."))
 
     def closeEvent(self, event):
         if self.save_config():
             event.accept()
         else:
-            reply = QMessageBox.question(self, "Save Failed",
-                                         "Failed to save configuration. Close anyway?",
+            reply = QMessageBox.question(self, localization(self.config["Language"], "Save Failed"),
+                                         localization(self.config["Language"], "Failed to save configuration. Close anyway?"),
                                          QMessageBox.Yes | QMessageBox.No)
             if reply == QMessageBox.Yes:
                 event.accept()
@@ -132,36 +138,36 @@ class SettingsEditor(QWidget):
         self.wave_duration.setRange(0.5, 10.0)
         self.wave_duration.setSingleStep(0.1)
         self.wave_duration.setValue(self.wave_params.get("wave_duration", 3.0))
-        self.wave_duration.setToolTip("Total duration of wave in seconds")
-        layout.addRow("Wave Duration (s):", self.wave_duration)
+        self.wave_duration.setToolTip(localization(self.config["Language"], "Total duration of wave in seconds"))
+        layout.addRow(localization(self.config["Language"], "Wave Duration (s):"), self.wave_duration)
 
         self.shrink_amount = QDoubleSpinBox()
         self.shrink_amount.setRange(0.01, 0.3)
         self.shrink_amount.setSingleStep(0.01)
         self.shrink_amount.setValue(self.wave_params.get("shrink_amount", 0.05))
-        self.shrink_amount.setToolTip("Shrink amount (0.05 = scale to 0.95)")
-        layout.addRow("Shrink Amount:", self.shrink_amount)
+        self.shrink_amount.setToolTip(localization(self.config["Language"], "Shrink amount (0.05 = scale to 0.95)"))
+        layout.addRow(localization(self.config["Language"], "Shrink Amount:"), self.shrink_amount)
 
         self.shrink_dur = QDoubleSpinBox()
         self.shrink_dur.setRange(0.01, 0.5)
         self.shrink_dur.setSingleStep(0.01)
         self.shrink_dur.setValue(self.wave_params.get("shrink_dur", 0.06))
-        self.shrink_dur.setToolTip("Shrink duration ratio of total wave time")
-        layout.addRow("Shrink Duration Ratio:", self.shrink_dur)
+        self.shrink_dur.setToolTip(localization(self.config["Language"], "Shrink duration ratio of total wave time"))
+        layout.addRow(localization(self.config["Language"], "Shrink Duration Ratio:"), self.shrink_dur)
 
         self.recover_dur = QDoubleSpinBox()
         self.recover_dur.setRange(0.01, 0.5)
         self.recover_dur.setSingleStep(0.01)
         self.recover_dur.setValue(self.wave_params.get("recover_dur", 0.06))
-        self.recover_dur.setToolTip("Recover duration ratio of total wave time")
-        layout.addRow("Recover Duration Ratio:", self.recover_dur)
+        self.recover_dur.setToolTip(localization(self.config["Language"], "Recover duration ratio of total wave time"))
+        layout.addRow(localization(self.config["Language"], "Recover Duration Ratio:"), self.recover_dur)
 
         self.max_radius_ratio = QDoubleSpinBox()
         self.max_radius_ratio.setRange(0.1, 1.5)
         self.max_radius_ratio.setSingleStep(0.05)
         self.max_radius_ratio.setValue(self.wave_params.get("max_radius_ratio", 0.8))
-        self.max_radius_ratio.setToolTip("Max wave radius ratio (clamped to 0.75 to avoid edge clipping)")
-        layout.addRow("Max Radius Ratio:", self.max_radius_ratio)
+        self.max_radius_ratio.setToolTip(localization(self.config["Language"], "Max wave radius ratio (clamped to 0.75 to avoid edge clipping)"))
+        layout.addRow(localization(self.config["Language"], "Max Radius Ratio:"), self.max_radius_ratio)
 
         self.info_label = QLabel()
         self.update_info()
@@ -179,7 +185,7 @@ class SettingsEditor(QWidget):
         recover = self.recover_dur.value()
         total_vib = shrink + recover
         wave_start = total_vib * dur
-        info = f"Vibration total: {total_vib*100:.1f}%  ({total_vib*dur:.2f}s)   Wave starts at: {wave_start:.2f}s"
+        info = f"{localization(self.config['Language'], 'Vibration total:')} {total_vib*100:.1f}%  ({total_vib*dur:.2f}s)   {localization(self.config['Language'], 'Wave starts at:')} {wave_start:.2f}s"
         self.info_label.setText(info)
 
     # ---------- Intervals Tab ----------
@@ -189,15 +195,15 @@ class SettingsEditor(QWidget):
 
         self.table = QTableWidget()
         self.table.setColumnCount(5)
-        self.table.setHorizontalHeaderLabels(["Pips", "Time(s)", "Karma", "Reinf.", "MaxKarma"])
+        self.table.setHorizontalHeaderLabels([localization(self.config["Language"], "Pips"), localization(self.config["Language"], "Time(s)"), localization(self.config["Language"], "Karma"), localization(self.config["Language"], "Reinf."), localization(self.config["Language"], "MaxKarma")])
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.populate_table()
         layout.addWidget(self.table)
 
         btn_layout = QHBoxLayout()
-        add_btn = QPushButton("Add Row")
+        add_btn = QPushButton(localization(self.config["Language"], "Add Row"))
         add_btn.clicked.connect(self.add_row)
-        remove_btn = QPushButton("Remove Selected")
+        remove_btn = QPushButton(localization(self.config["Language"], "Remove Selected"))
         remove_btn.clicked.connect(self.remove_row)
         btn_layout.addWidget(add_btn)
         btn_layout.addWidget(remove_btn)
@@ -237,28 +243,32 @@ class SettingsEditor(QWidget):
         widget = QWidget()
         layout = QFormLayout()
 
+        self.Language_edit = QLineEdit(self.Language)
+        self.Language_edit.setToolTip(localization(self.config["Language"], "changes of Language made will be applied after this software restarting."))
+        layout.addRow(localization(self.config["Language"], "Language:"), self.Language_edit)
+
         self.hotkey_edit = QLineEdit(self.hotkey)
-        layout.addRow("Show Hotkey:", self.hotkey_edit)
+        layout.addRow(localization(self.config["Language"], "Show Hotkey:"), self.hotkey_edit)
 
         self.quit_hotkey_edit = QLineEdit(self.quit_hotkey)
-        layout.addRow("Quit Hotkey:", self.quit_hotkey_edit)
+        layout.addRow(localization(self.config["Language"], "Quit Hotkey:"), self.quit_hotkey_edit)
 
         self.scale_spin = QDoubleSpinBox()
         self.scale_spin.setRange(0.3, 5.0)
         self.scale_spin.setSingleStep(0.1)
         self.scale_spin.setValue(self.scale)
-        layout.addRow("Zoom Scale:", self.scale_spin)
+        layout.addRow(localization(self.config["Language"], "Zoom Scale:"), self.scale_spin)
 
         self.sound_check = QCheckBox()
         self.sound_check.setChecked(self.sound_enabled)
-        layout.addRow("Sound Enabled:", self.sound_check)
+        layout.addRow(localization(self.config["Language"], "Sound Enabled:"), self.sound_check)
 
         self.ticktock_spin = QDoubleSpinBox()
         self.ticktock_spin.setRange(0.1, 999999999.0)
         self.ticktock_spin.setSingleStep(0.1)
         self.ticktock_spin.setValue(self.ticktock)
-        self.ticktock_spin.setToolTip("Interval between tick and tock sounds (seconds)")
-        layout.addRow("Ticktock (s):", self.ticktock_spin)
+        self.ticktock_spin.setToolTip(localization(self.config["Language"], "Interval between tick and tock sounds (seconds)"))
+        layout.addRow(localization(self.config["Language"], "Ticktock (s):"), self.ticktock_spin)
 
         widget.setLayout(layout)
         return widget
@@ -266,6 +276,7 @@ class SettingsEditor(QWidget):
     # ---------- Export JSON ----------
     def export_json(self):
         self.collect_table_data()
+        self.Language = self.Language_edit.text()
         self.hotkey = self.hotkey_edit.text()
         self.quit_hotkey = self.quit_hotkey_edit.text()
         self.scale = self.scale_spin.value()
@@ -284,15 +295,15 @@ class SettingsEditor(QWidget):
             "intervals": self.intervals
         }
         file_path, _ = QFileDialog.getSaveFileName(
-            self, "Export JSON", "", "JSON files (*.json)"
+            self, localization(self.config["Language"], "Export JSON"), "", localization(self.config["Language"], "JSON files (*.json)")
         )
         if file_path:
             try:
                 with open(file_path, 'w') as f:
                     json.dump(data, f, indent=2)
-                QMessageBox.information(self, "Exported", f"JSON exported to {file_path}")
+                QMessageBox.information(self, localization(self.config["Language"], "Exported"), f"{localization(self.config['Language'], 'JSON exported to')} {file_path}")
             except Exception as e:
-                QMessageBox.critical(self, "Error", f"Failed to export: {e}")
+                QMessageBox.critical(self, localization(self.config["Language"], "Error"), f"{localization(self.config['Language'], 'Failed to export')}: {e}")
 
     def collect_table_data(self):
         self.intervals = []
@@ -313,7 +324,7 @@ class SettingsEditor(QWidget):
                     }
                     self.intervals.append(interval)
             except Exception as e:
-                QMessageBox.warning(self, "Data Error", f"Row {row+1} has invalid data: {e}")
+                QMessageBox.warning(self, localization(self.config["Language"], "Data Error"), f"{localization(self.config['Language'], 'Row')} {row+1} {localization(self.config['Language'], 'has invalid data:')} {e}")
                 return
 
 if __name__ == "__main__":

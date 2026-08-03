@@ -15,6 +15,10 @@ import ClockData
 import Project
 from Project import Interval
 
+from localization import localization
+
+Language = ""
+
 def resource_path(relative_path):
     try:
         base_path = sys._MEIPASS
@@ -96,41 +100,43 @@ class ClockWindow(QWidget):
         menu = QMenu(self)
         ctrl = self.main_controller
 
-        action1 = menu.addAction("Set Countdown (seconds)...")
+        action1 = menu.addAction(localization(Language, "Set Countdown (seconds)..."))
         action1.triggered.connect(ctrl.set_countdown)
 
-        action2 = menu.addAction("Load JSON...")
+        action2 = menu.addAction(localization(Language, "Load JSON..."))
         action2.triggered.connect(ctrl.load_file)
 
-        action3 = menu.addAction("Set Karma Level (1-10)...")
+        action3 = menu.addAction(localization(Language, "Set Karma Level (1-10)..."))
         action3.triggered.connect(ctrl.set_karma_level)
 
-        zoom_menu = menu.addMenu("Zoom")
-        zoom_in = zoom_menu.addAction("Zoom In (+0.2)")
+        zoom_menu = menu.addMenu(localization(Language, "Zoom"))
+        zoom_in = zoom_menu.addAction(localization(Language, "Zoom In (+0.2)"))
         zoom_in.triggered.connect(lambda: ctrl.zoom_change(0.2))
-        zoom_out = zoom_menu.addAction("Zoom Out (-0.2)")
+        zoom_out = zoom_menu.addAction(localization(Language, "Zoom Out (-0.2)"))
         zoom_out.triggered.connect(lambda: ctrl.zoom_change(-0.2))
-        reset_zoom = zoom_menu.addAction("Reset Zoom (1.0)")
+        reset_zoom = zoom_menu.addAction(localization(Language, "Reset Zoom (1.0)"))
         reset_zoom.triggered.connect(lambda: ctrl.zoom_change(1.0, absolute=True))
 
-        settings_menu = menu.addMenu("Settings")
-        hotkey_action = settings_menu.addAction("Set Show Hotkey...")
+        settings_menu = menu.addMenu(localization(Language, "Settings"))
+        Lang = settings_menu.addAction(localization(Language, "Set Language..."))
+        Lang.triggered.connect(ctrl.set_Language)
+        hotkey_action = settings_menu.addAction(localization(Language, "Set Show Hotkey..."))
         hotkey_action.triggered.connect(ctrl.set_hotkey)
-        quit_hotkey_action = settings_menu.addAction("Set Quit Hotkey...")
+        quit_hotkey_action = settings_menu.addAction(localization(Language, "Set Quit Hotkey..."))
         quit_hotkey_action.triggered.connect(ctrl.set_quit_hotkey)
         settings_menu.addSeparator()
 
-        sound_action = settings_menu.addAction(f"Sound: {'ON' if ctrl.sound_enabled else 'OFF'}")
+        sound_action = settings_menu.addAction(f"{localization(Language, 'Sound:')} {localization(Language, 'ON') if ctrl.sound_enabled else localization(Language, 'OFF')}")
         sound_action.triggered.connect(ctrl.toggle_sound)
 
-        top_status = "ON" if ctrl.always_on_top else "OFF"
-        action_top = menu.addAction(f"Toggle Always on Top ({top_status})")
+        top_status = localization(Language, "ON") if ctrl.always_on_top else localization(Language, "OFF")
+        action_top = menu.addAction(f"{localization(Language, 'Toggle Always on Top')} ({top_status})")
         action_top.triggered.connect(ctrl.toggle_always_on_top)
 
         menu.addSeparator()
-        action_hide = menu.addAction("Toggle Show/Hide")
+        action_hide = menu.addAction(localization(Language, "Toggle Show/Hide"))
         action_hide.triggered.connect(ctrl.toggle_show)
-        action_quit = menu.addAction("Quit")
+        action_quit = menu.addAction(localization(Language, "Quit"))
         action_quit.triggered.connect(ctrl.quit_app)
 
         menu.exec_(pos)
@@ -174,37 +180,41 @@ class RainWorldClock:
         self.tray.setToolTip("Rain Cycle Timer")
 
         tray_menu = QMenu()
-        t1 = tray_menu.addAction("Set Countdown (seconds)...")
+        t1 = tray_menu.addAction(localization(Language, "Set Countdown (seconds)..."))
         t1.triggered.connect(self.set_countdown)
-        t2 = tray_menu.addAction("Load JSON...")
+        t2 = tray_menu.addAction(localization(Language, "Load JSON..."))
         t2.triggered.connect(self.load_file)
-        t3 = tray_menu.addAction("Set Karma Level (1-10)...")
+        t3 = tray_menu.addAction(localization(Language, "Set Karma Level (1-10)..."))
         t3.triggered.connect(self.set_karma_level)
 
-        tray_settings = tray_menu.addMenu("Settings")
-        hk = tray_settings.addAction("Set Show Hotkey...")
+        tray_zoom = tray_menu.addMenu(localization(Language, "Zoom"))
+        tray_zoom_in = tray_zoom.addAction(localization(Language, "Zoom In (+0.2)"))
+        tray_zoom_in.triggered.connect(lambda: self.zoom_change(0.2))
+        tray_zoom_out = tray_zoom.addAction(localization(Language, "Zoom Out (-0.2)"))
+        tray_zoom_out.triggered.connect(lambda: self.zoom_change(-0.2))
+        tray_reset = tray_zoom.addAction(localization(Language, "Reset Zoom (1.0)"))
+        tray_reset.triggered.connect(lambda: self.zoom_change(1.0, absolute=True))
+
+        tray_settings = tray_menu.addMenu(localization(Language, "Settings"))
+        Lang = tray_settings.addAction(localization(Language, "Set Language..."))
+        Lang.triggered.connect(self.set_Language)
+        hk = tray_settings.addAction(localization(Language, "Set Show Hotkey..."))
         hk.triggered.connect(self.set_hotkey)
-        qhk = tray_settings.addAction("Set Quit Hotkey...")
+        qhk = tray_settings.addAction(localization(Language, "Set Quit Hotkey..."))
         qhk.triggered.connect(self.set_quit_hotkey)
         tray_settings.addSeparator()
 
-        tray_sound = tray_settings.addAction(f"Sound: {'ON' if self.sound_enabled else 'OFF'}")
+        tray_sound = tray_settings.addAction(f"{localization(Language, 'Sound:')} {localization(Language, 'ON') if self.sound_enabled else localization(Language, 'OFF')}")
         tray_sound.triggered.connect(self.toggle_sound)
 
-        tray_zoom = tray_menu.addMenu("Zoom")
-        tray_zoom_in = tray_zoom.addAction("Zoom In (+0.2)")
-        tray_zoom_in.triggered.connect(lambda: self.zoom_change(0.2))
-        tray_zoom_out = tray_zoom.addAction("Zoom Out (-0.2)")
-        tray_zoom_out.triggered.connect(lambda: self.zoom_change(-0.2))
-        tray_reset = tray_zoom.addAction("Reset Zoom (1.0)")
-        tray_reset.triggered.connect(lambda: self.zoom_change(1.0, absolute=True))
-
-        top_status = "ON" if self.always_on_top else "OFF"
-        t4 = tray_menu.addAction(f"Toggle Always on Top ({top_status})")
+        top_status = localization(Language, "ON") if self.always_on_top else localization(Language, "OFF")
+        t4 = tray_menu.addAction(f"{localization(Language, 'Toggle Always on Top')} ({top_status})")
         t4.triggered.connect(self.toggle_always_on_top)
         tray_menu.addSeparator()
-        t5 = tray_menu.addAction("Quit")
-        t5.triggered.connect(self.quit_app)
+        t5 = tray_menu.addAction(localization(Language, "Toggle Show/Hide"))
+        t5.triggered.connect(self.toggle_show)
+        t6 = tray_menu.addAction(localization(Language, "Quit"))
+        t6.triggered.connect(self.quit_app)
         self.tray.setContextMenu(tray_menu)
         self.tray.show()
         self.tray.activated.connect(self.on_tray_click)
@@ -225,6 +235,7 @@ class RainWorldClock:
 
     def load_config(self):
         default = {
+            "Language": "en-us",
             "hotkey": "ctrl+shift+f",
             "quit_hotkey": "ctrl+shift+q",
             "sound_enabled": True,
@@ -236,12 +247,16 @@ class RainWorldClock:
             try:
                 with open(CONFIG_FILE, 'r') as f:
                     data = json.load(f)
+                    global Language
+                    Language = data.get("Language", default["Language"])
                     self.hotkey = data.get("hotkey", default["hotkey"])
                     self.quit_hotkey = data.get("quit_hotkey", default["quit_hotkey"])
                     self.sound_enabled = data.get("sound_enabled", default["sound_enabled"])
                     self.scale = data.get("scale", default["scale"])
                     self.saved_karma_symbol = data.get("karma_symbol", default["karma_symbol"])
                     self.saved_max_karma = data.get("max_karma", default["max_karma"])
+                    self.intervals = data.get("intervals", [])
+                    Project.INTERVALS = self.intervals
                     # 【修复】读取 ticktock 并应用到 Project.settings
                     ticktock = data.get("ticktock", 3.2)
                     Project.settings["ticktock"] = ticktock
@@ -254,6 +269,8 @@ class RainWorldClock:
                 self.scale = default["scale"]
                 self.saved_karma_symbol = default["karma_symbol"]
                 self.saved_max_karma = default["max_karma"]
+                self.intervals = []
+                Project.INTERVALS = []
                 Project.WAVE_PARAMS = {}
                 Project.settings["ticktock"] = 3.2
         else:
@@ -263,6 +280,8 @@ class RainWorldClock:
             self.scale = default["scale"]
             self.saved_karma_symbol = default["karma_symbol"]
             self.saved_max_karma = default["max_karma"]
+            self.intervals = []
+            Project.INTERVALS = []
             Project.WAVE_PARAMS = {}
             Project.settings["ticktock"] = 3.2
 
@@ -274,14 +293,16 @@ class RainWorldClock:
             karma = self.saved_karma_symbol
             maxk = self.saved_max_karma
         data = {
+            "Language": Language,
             "hotkey": self.hotkey,
-            "quit_hotkey": self.quit_hotkey,
             "sound_enabled": self.sound_enabled,
             "scale": Project.SCALE,
             "karma_symbol": karma,
             "max_karma": maxk,
+            "wave_params": getattr(Project, 'WAVE_PARAMS', {}),
+            "intervals": getattr(Project, 'INTERVALS', {}),
             "ticktock": Project.settings.get("ticktock", 3.2),
-            "wave_params": getattr(Project, 'WAVE_PARAMS', {})
+            "quit_hotkey": self.quit_hotkey,
         }
         try:
             with open(CONFIG_FILE, 'w') as f:
@@ -300,10 +321,26 @@ class RainWorldClock:
             pass
         keyboard.add_hotkey(self.hotkey, self.toggle_show)
 
+    def set_Language(self):
+        new_Language, ok = QInputDialog.getText(
+            None, localization(Language, "Set Language"),
+            localization(Language, "changes of Language made will be applied after this software restarting."),
+            text=Language
+        )
+        if ok and new_Language.strip():
+            try:
+                test_Language = new_Language.strip().lower()
+                # Language = test_Language
+                # 我也没办法，加了上面这行代码就报错
+                # UnboundLocalError: cannot access local variable 'Language' where it is not associated with a value
+                QMessageBox.critical(None, localization(Language, "Error"), "这个因为本地化者技术力不够，所以就先搁置了。且看原作者发力吧")
+            except:
+                pass
+
     def set_hotkey(self):
         new_key, ok = QInputDialog.getText(
-            None, "Set Show Hotkey",
-            "Enter new hotkey combination (e.g. 'ctrl+shift+f' or 'alt+x'):",
+            None, localization(Language, "Set Show Hotkey"),
+            localization(Language, "Enter new hotkey combination (e.g. 'ctrl+shift+f' or 'alt+x'):"),
             text=self.hotkey
         )
         if ok and new_key.strip():
@@ -313,7 +350,7 @@ class RainWorldClock:
                 mods = ['ctrl', 'shift', 'alt', 'win']
                 non_mods = [p for p in parts if p not in mods]
                 if not non_mods:
-                    raise ValueError("Need at least one non-modifier key")
+                    raise ValueError(localization(Language, "Need at least one non-modifier key"))
                 try:
                     keyboard.remove_hotkey(self.hotkey)
                 except:
@@ -321,9 +358,9 @@ class RainWorldClock:
                 self.hotkey = test_key
                 keyboard.add_hotkey(self.hotkey, self.toggle_show)
                 self.save_config()
-                self.tray.showMessage("Hotkey", f"Show hotkey set to {self.hotkey}", QSystemTrayIcon.Information, 1500)
+                self.tray.showMessage(localization(Language, "Hotkey"), f"{localization(Language, 'Show hotkey set to')} {self.hotkey}", QSystemTrayIcon.Information, 1500)
             except Exception as e:
-                QMessageBox.critical(None, "Error", f"Invalid hotkey: {e}\nPlease try again.")
+                QMessageBox.critical(None, localization(Language, "Error"), f"{localization(Language, 'Invalid hotkey:')} {e}\n{localization(Language, 'Please try again.')}")
                 self.load_config()
                 try:
                     keyboard.remove_hotkey(self.hotkey)
@@ -340,8 +377,8 @@ class RainWorldClock:
 
     def set_quit_hotkey(self):
         new_key, ok = QInputDialog.getText(
-            None, "Set Quit Hotkey",
-            "Enter new quit hotkey combination (e.g. 'ctrl+shift+q' or 'alt+q'):",
+            None, localization(Language, "Set Quit Hotkey"),
+            localization(Language, "Enter new quit hotkey combination (e.g. 'ctrl+shift+q' or 'alt+q'):"),
             text=self.quit_hotkey
         )
         if ok and new_key.strip():
@@ -351,7 +388,7 @@ class RainWorldClock:
                 mods = ['ctrl', 'shift', 'alt', 'win']
                 non_mods = [p for p in parts if p not in mods]
                 if not non_mods:
-                    raise ValueError("Need at least one non-modifier key")
+                    raise ValueError(localization(Language, "Need at least one non-modifier key"))
                 try:
                     keyboard.remove_hotkey(self.quit_hotkey)
                 except:
@@ -359,9 +396,9 @@ class RainWorldClock:
                 self.quit_hotkey = test_key
                 keyboard.add_hotkey(self.quit_hotkey, self.quit_app)
                 self.save_config()
-                self.tray.showMessage("Hotkey", f"Quit hotkey set to {self.quit_hotkey}", QSystemTrayIcon.Information, 1500)
+                self.tray.showMessage(localization(Language, "Hotkey"), f"{localization(Language, 'Quit hotkey set to')} {self.quit_hotkey}", QSystemTrayIcon.Information, 1500)
             except Exception as e:
-                QMessageBox.critical(None, "Error", f"Invalid quit hotkey: {e}\nPlease try again.")
+                QMessageBox.critical(None, localization(Language, "Error"), f"{localization(Language, 'Invalid quit hotkey:')} {e}\n{localization(Language, 'Please try again.')}")
                 self.load_config()
                 try:
                     keyboard.remove_hotkey(self.quit_hotkey)
@@ -387,8 +424,8 @@ class RainWorldClock:
     def set_karma_level(self):
         current = self.current_interval.karmaSymbol or 1
         level, ok = QInputDialog.getInt(
-            None, "Set Karma Level",
-            "Enter Karma level (1-10):\n(6-10 auto-set maxKarma=10)",
+            None, localization(Language, "Set Karma Level"),
+            localization(Language, "Enter Karma level (1-10):\n(6-10 auto-set maxKarma=10)"),
             value=current, min=1, max=10, step=1
         )
         if ok:
@@ -414,7 +451,7 @@ class RainWorldClock:
 
     def load_file(self):
         file_path, _ = QFileDialog.getOpenFileName(
-            None, "Select JSON file", "", "JSON files (*.json)"
+            None, localization(Language, "Select JSON file"), "", localization(Language, "JSON files (*.json)")
         )
         if file_path:
             try:
@@ -433,7 +470,7 @@ class RainWorldClock:
 
     def set_countdown(self):
         seconds, ok = QInputDialog.getInt(
-            None, "Set Countdown", "Enter total seconds (e.g. 300 = 5min):",
+            None, localization(Language, "Set Countdown"), localization(Language, "Enter total seconds (e.g. 300 = 5min):"),
             value=600, min=1, max=86400, step=10
         )
         if ok:
