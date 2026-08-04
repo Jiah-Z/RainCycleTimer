@@ -1,4 +1,16 @@
+SUPPORTED_LANGUAGES = ("en-us", "zh-cn")
+DEFAULT_LANGUAGE = "en-us"
+
+
 def localization(Language, index):
+    """Return the localized text for index, falling back to English.
+
+    An unknown or empty Language (e.g. when config.json is missing and the
+    caller never assigned one) falls back to DEFAULT_LANGUAGE instead of
+    raising UnboundLocalError.
+    """
+    if(Language not in SUPPORTED_LANGUAGES):
+        Language = DEFAULT_LANGUAGE
     if(Language == "en-us"):
         Language_switcher = {
             "Set Countdown (seconds)...": "Set Countdown (seconds)...",
