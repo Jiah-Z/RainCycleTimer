@@ -56,6 +56,7 @@ class SettingsEditor(QWidget):
         self.wave_params = self.config.get("wave_params", default_wave)
         self.intervals = self.config.get("intervals", [])
         self.Language = self.config.get("Language", "en-us")
+        self.config["Language"] = self.Language
         self.hotkey = self.config.get("hotkey", "ctrl+shift+f")
         self.quit_hotkey = self.config.get("quit_hotkey", "ctrl+shift+q")
         self.sound_enabled = self.config.get("sound_enabled", True)
