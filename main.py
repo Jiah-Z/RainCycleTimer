@@ -234,6 +234,7 @@ class RainWorldClock:
         self.fn_down = True
 
     def load_config(self):
+        global Language
         default = {
             "Language": "en-us",
             "hotkey": "ctrl+shift+f",
@@ -243,11 +244,11 @@ class RainWorldClock:
             "karma_symbol": 0,
             "max_karma": 5
         }
+        Language = default["Language"]
         if os.path.exists(CONFIG_FILE):
             try:
                 with open(CONFIG_FILE, 'r') as f:
                     data = json.load(f)
-                    global Language
                     Language = data.get("Language", default["Language"])
                     self.hotkey = data.get("hotkey", default["hotkey"])
                     self.quit_hotkey = data.get("quit_hotkey", default["quit_hotkey"])
