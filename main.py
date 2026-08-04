@@ -448,7 +448,7 @@ class RainWorldClock:
         self.window.setWindowFlags(flags)
         if was_visible:
             self.window.show()
-        self.tray.showMessage("Always on Top", f"Set to {'ON' if self.always_on_top else 'OFF'}", QSystemTrayIcon.Information, 1500)
+        self.tray.showMessage(localization(Language, "Always on Top"), f"{localization(Language, 'Set to')} {localization(Language, 'ON') if self.always_on_top else localization(Language, 'OFF')}", QSystemTrayIcon.Information, 1500)
 
     def load_file(self):
         file_path, _ = QFileDialog.getOpenFileName(
