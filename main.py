@@ -15,7 +15,7 @@ import ClockData
 import Project
 from Project import Interval
 
-from localization import localization
+from localization import localization, SUPPORTED_LANGUAGES
 
 Language = ""
 
@@ -323,20 +323,23 @@ class RainWorldClock:
         keyboard.add_hotkey(self.hotkey, self.toggle_show)
 
     def set_Language(self):
+        global Language
         new_Language, ok = QInputDialog.getText(
             None, localization(Language, "Set Language"),
             localization(Language, "changes of Language made will be applied after this software restarting."),
             text=Language
         )
         if ok and new_Language.strip():
-            try:
-                test_Language = new_Language.strip().lower()
-                # Language = test_Language
-                # 我也没办法，加了上面这行代码就报错
-                # UnboundLocalError: cannot access local variable 'Language' where it is not associated with a value
-                QMessageBox.critical(None, localization(Language, "Error"), "这个因为本地化者技术力不够，所以就先搁置了。且看原作者发力吧")
-            except:
-                pass
+            new_Language = new_Language.strip().lower()
+            if new_Language not in SUPPORTED_LANGUAGES:
+                QMessageBox.critical(
+                    None, localization(Language, "Error"),
+                    f"{localization(Language, 'Unsupported language:')} {new_Language}\n"
+                    f"{localization(Language, 'Available:')} {', '.join(SUPPORTED_LANGUAGES)}"
+                )
+                return
+            Language = new_Language
+            self.save_config()
 
     def set_hotkey(self):
         new_key, ok = QInputDialog.getText(
