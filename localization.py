@@ -95,7 +95,9 @@ def localization(Language, index):
             "Sound Enabled:": "Sound Enabled:",
             "Ticktock (s):": "Ticktock (s):",
             "Interval between tick and tock sounds (seconds)": "Interval between tick and tock sounds (seconds)",
-            "Error": "Error"
+            "Error": "Error",
+            "Unsupported language:": "Unsupported language:",
+            "Available:": "Available:"
         }
     if(Language == "zh-cn"):
         Language_switcher = {
@@ -181,6 +183,8 @@ def localization(Language, index):
             "Sound Enabled:": "声音开关:",
             "Ticktock (s):": "嘀嗒声周期 (秒):",
             "Interval between tick and tock sounds (seconds)": "嘀声和嗒声之间的间隔 (秒)",
-            "Error": "错误"
+            "Error": "错误",
+            "Unsupported language:": "不支持的语言:",
+            "Available:": "可用语言:"
         }
     return Language_switcher.get(index, "Index_Error")
