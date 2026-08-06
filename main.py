@@ -542,21 +542,25 @@ class RainWorldClock:
                           (self.fn_down or in_halftime or in_endtime or
                            current - self.start_time <= 2))
 
-        if self.sound_enabled:
-            tick_interval = Project.settings["ticktock"]
-            if (current - self.interval_start >= (self.last_tick + 0.5) * tick_interval and
+        tick_interval = Project.settings["ticktock"]
+        if tick_interval > 0:
+            elapsed = current - self.interval_start
+            if (elapsed >= (self.last_tick + 0.5) * tick_interval and
                     not self.prepared):
-                threading.Thread(target=lambda: self.play_sound(self.is_tick, stop=True)).start()
+                if self.sound_enabled:
+                    threading.Thread(target=lambda: self.play_sound(self.is_tick, stop=True)).start()
                 self.prepared = True
-            if (current - self.interval_start >= (self.last_tick + 1) * tick_interval):
+            if elapsed >= (self.last_tick + 1) * tick_interval:
                 if (self.fading_power >= 0.99 and
                     not in_halftime and not in_endtime and
                     self.current_interval.totalPip > 0 and
-                    current - self.interval_start <= endtime):
-                    threading.Thread(target=lambda: self.play_sound(self.is_tick, stop=False)).start()
+                    elapsed <= endtime):
+                    if self.sound_enabled:
+                        threading.Thread(target=lambda: self.play_sound(self.is_tick, stop=False)).start()
                     self.is_tick = not self.is_tick
                     self.prepared = False
-                self.last_tick += 1
+                self.last_tick = max(self.last_tick + 1,
+                                     int(elapsed // tick_interval))
 
         dt = min(current - self.last_frame, 1/20)
         if should_display:
