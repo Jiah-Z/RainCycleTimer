@@ -245,7 +245,7 @@ class SettingsEditor(QWidget):
         layout = QFormLayout()
 
         self.Language_edit = QLineEdit(self.Language)
-        self.Language_edit.setToolTip(localization(self.config["Language"], "changes of Language made will be applied after this software restarting."))
+        self.Language_edit.setToolTip(localization(self.config["Language"], "changes of Language made will be applied after this program restarting."))
         layout.addRow(localization(self.config["Language"], "Language:"), self.Language_edit)
 
         self.hotkey_edit = QLineEdit(self.hotkey)

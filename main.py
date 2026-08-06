@@ -326,7 +326,7 @@ class RainWorldClock:
         global Language
         new_Language, ok = QInputDialog.getText(
             None, localization(Language, "Set Language"),
-            localization(Language, "changes of Language made will be applied after this software restarting."),
+            localization(Language, "Enter the language you want to change to."),
             text=Language
         )
         if ok and new_Language.strip():
